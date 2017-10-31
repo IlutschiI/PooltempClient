@@ -18,6 +18,7 @@ public class Temperature {
 	private int id;
 	private Date time;
 	private double temperature;
+	private boolean transfered;
 
 	public int getId() {
 		return id;
@@ -41,6 +42,14 @@ public class Temperature {
 
 	public void setTemperature(double temperature) {
 		this.temperature = temperature;
+	}
+
+	public boolean isTransfered() {
+		return transfered;
+	}
+
+	public void setTransfered(boolean transfered) {
+		this.transfered = transfered;
 	}
 
 }
