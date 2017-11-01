@@ -9,9 +9,12 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
-@NamedQueries(@NamedQuery(name = "findAll", query = "Select t from Temperature t"))
+@NamedQueries({ @NamedQuery(name = Temperature.FIND_ALL, query = "Select t from Temperature t"),
+		@NamedQuery(name = Temperature.FIND_BY_ID, query = "Select t from Temperature t where t.id = :id") })
 @Entity
 public class Temperature {
+	public static final String FIND_ALL = "temperature.findAll";
+	public static final String FIND_BY_ID = "temperature.findById";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

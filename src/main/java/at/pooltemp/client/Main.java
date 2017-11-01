@@ -20,7 +20,7 @@ public class Main {
 		entityManager.persist(t);
 		entityManager.getTransaction().commit();
 
-		Temperature temp = (Temperature) entityManager.createNamedQuery("findAll").getResultList().get(0);
+		Temperature temp = (Temperature) entityManager.createNamedQuery(Temperature.FIND_ALL).getResultList().get(0);
 		System.out.println(temp);
 		System.exit(0);
 	}
