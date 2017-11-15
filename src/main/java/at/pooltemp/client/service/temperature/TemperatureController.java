@@ -13,6 +13,7 @@ import com.pi4j.io.w1.W1Device;
 import com.pi4j.io.w1.W1Master;
 
 import at.pooltemp.client.http.HTTPTemperatureRequest;
+import at.pooltemp.client.service.temperature.db.TemperatureDBFacade;
 import at.pooltemp.client.service.temperature.model.Temperature;
 
 public class TemperatureController {
@@ -20,6 +21,7 @@ public class TemperatureController {
 	private static final int MINS30_IN_MILLISECONDS = 1800;
 
 	private W1Master master = new W1Master();
+	private TemperatureDBFacade facade= new TemperatureDBFacade();
 	private Temperature temperature;
 	private Logger logger = Logger.getLogger("TemepratureController");
 	private HTTPTemperatureRequest httpTemperatureRequest = new HTTPTemperatureRequest();
@@ -35,7 +37,8 @@ public class TemperatureController {
 				logger.info("started");
 				while (true) {
 					try {
-						readTemperatureFromSensor();
+						temperature=getNewTemperature();
+						facade.persist(temperature);
 						httpTemperatureRequest.postTemperature(temperature);
 						Thread.sleep(MINS30_IN_MILLISECONDS);
 					} catch (InterruptedException e) {
@@ -53,7 +56,8 @@ public class TemperatureController {
 		return temperature;
 	}
 
-	private void readTemperatureFromSensor() {
+	private Temperature getNewTemperature() {
+		Temperature temperature=null;
 		List<W1Device> devices = master.getDevices().stream()
 				.filter(d -> d.getFamilyId() == TmpDS18B20DeviceType.FAMILY_CODE).collect(Collectors.toList());
 
@@ -62,27 +66,32 @@ public class TemperatureController {
 		}
 
 		for (W1Device w1Device : devices) {
-			temperature = new Temperature();
+			temperature = readTemperatureFromSensor(w1Device);
+		}
+		return temperature;
+	}
 
-			double temp = ((TemperatureSensor) w1Device).getTemperature();
+	private Temperature readTemperatureFromSensor(W1Device w1Device) {
+		Temperature temperature;
+		temperature = new Temperature();
 
-			if (temp == 85) {
-				logger.warning("invalid Temperature was found");
-				try {
-					Thread.sleep(100);
-					readTemperatureFromSensor();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+		double temp = ((TemperatureSensor) w1Device).getTemperature();
 
-			} else {
-				logger.info("valid Temperature was found, value is" + temp);
+		if (temp == 85) {
+			logger.warning("invalid Temperature was found");
+			try {
+				Thread.sleep(100);
+				getNewTemperature();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 
-			temperature.setTemperature(temp);
-			temperature.setTime(new Date());
-
+		} else {
+			logger.info("valid Temperature was found, value is" + temp);
 		}
+
+		temperature.setTemperature(temp);
+		temperature.setTime(new Date());
+		return temperature;
 	}
 }

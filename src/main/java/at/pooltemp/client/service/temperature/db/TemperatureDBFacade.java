@@ -45,5 +45,15 @@ public class TemperatureDBFacade {
 		}
 		return result;
 	}
+	
+	public void updateTransfered(Temperature t) {
+		transaction.begin();
+		int updatedEntities=entityManager.createNamedQuery(Temperature.SET_TRANSFERED_TRUE).setParameter("id", t.getId()).executeUpdate();
+		transaction.commit();
+		if(updatedEntities!=1) {
+			throw new RuntimeException("More ore less than one Entity was updated!!!  updated entities: "+updatedEntities);
+		}
+		
+	}
 
 }
