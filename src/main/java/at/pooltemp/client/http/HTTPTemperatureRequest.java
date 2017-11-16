@@ -37,6 +37,10 @@ public class HTTPTemperatureRequest {
 
 	}
 
+	public void postAllUnTransferedTemperatures() {
+		facade.findNotTransfered().stream().forEach(this::postTemperature);
+	}
+	
 	private void handleError(Temperature t) {
 		facade.persist(t);
 	}

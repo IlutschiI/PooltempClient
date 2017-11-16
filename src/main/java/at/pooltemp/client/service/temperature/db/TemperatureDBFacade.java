@@ -55,5 +55,9 @@ public class TemperatureDBFacade {
 		}
 		
 	}
+	
+	public List<Temperature> findNotTransfered(){
+		return entityManager.createNamedQuery(Temperature.FIND_NOT_TRANSFERED).setParameter("transfered", false).getResultList();
+	}
 
 }

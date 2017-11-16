@@ -39,7 +39,8 @@ public class TemperatureController {
 					try {
 						temperature=getNewTemperature();
 						facade.persist(temperature);
-						httpTemperatureRequest.postTemperature(temperature);
+						//httpTemperatureRequest.postTemperature(temperature);
+						httpTemperatureRequest.postAllUnTransferedTemperatures();
 						Thread.sleep(MINS30_IN_MILLISECONDS);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
