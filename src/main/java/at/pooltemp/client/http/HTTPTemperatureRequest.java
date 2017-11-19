@@ -54,7 +54,7 @@ public class HTTPTemperatureRequest {
 	}
 
 	private String buildUrl(Temperature t) {
-		return BASE_URL + "?temp=" + t.getTemperature()+"?date="+t.getTime();
+		return BASE_URL + "?temp=" + t.getTemperature()+"&date="+t.getTime().getTime();
 	}
 
 }
