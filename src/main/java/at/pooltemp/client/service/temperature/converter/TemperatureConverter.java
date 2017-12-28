@@ -9,6 +9,7 @@ public class TemperatureConverter {
 		TemperatureDTO temperatureDTO = new TemperatureDTO();
 		temperatureDTO.setTemperature(temperature.getTemperature());
 		temperatureDTO.setTime(temperature.getTime());
+		temperatureDTO.setSensorID(temperature.getSensorID());
 		return temperatureDTO;
 	}
 

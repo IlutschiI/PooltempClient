@@ -42,6 +42,7 @@ public class TemperatureService {
 
 		temperature.setTemperature(temp);
 		temperature.setTime(new Date());
+		temperature.setSensorID(w1Device.getId());
 		return temperature;
 	}
 

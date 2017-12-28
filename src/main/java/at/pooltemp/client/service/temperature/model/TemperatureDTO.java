@@ -6,7 +6,7 @@ public class TemperatureDTO {
 
 	private Date time;
 	private double temperature;
-	private TemperatureType temperatureType;
+	private String sensorID;
 
 	public Date getTime() {
 		return time;
@@ -24,12 +24,12 @@ public class TemperatureDTO {
 		this.temperature = temperature;
 	}
 
-	public TemperatureType getTemperatureType() {
-		return temperatureType;
+	public String getSensorID() {
+		return sensorID;
 	}
 
-	public void setTemperatureType(TemperatureType temperatureType) {
-		this.temperatureType = temperatureType;
+	public void setSensorID(String sensorID) {
+		this.sensorID = sensorID;
 	}
 
 }
