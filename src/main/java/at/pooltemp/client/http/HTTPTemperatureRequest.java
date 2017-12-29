@@ -2,8 +2,13 @@ package at.pooltemp.client.http;
 
 import java.io.IOException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import at.pooltemp.client.service.temperature.converter.TemperatureConverter;
 import at.pooltemp.client.service.temperature.db.TemperatureDBFacade;
 import at.pooltemp.client.service.temperature.model.Temperature;
+import at.pooltemp.client.service.temperature.model.TemperatureDTO;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -17,12 +22,15 @@ public class HTTPTemperatureRequest {
 
 	public void postTemperature(Temperature t) {
 
-		String url = buildUrl(t);
-		OkHttpClient client = new OkHttpClient();
-		Request request = new Request.Builder().url(url)
-				.post(RequestBody.create(MediaType.parse("application/text"), "test")).build();
-
+		TemperatureDTO temperatureDTO = TemperatureConverter.convert(t);
+		
 		try {
+			String url = BASE_URL+"/new";
+			OkHttpClient client = new OkHttpClient();
+			Request request;
+			request = new Request.Builder().url(url).post(RequestBody.create(MediaType.parse("application/json"),
+					new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(temperatureDTO))).build();
+
 			Response response = client.newCall(request).execute();
 			if (response.code() != 200) {
 				System.out.println("something went wrong!!!");
@@ -31,7 +39,12 @@ public class HTTPTemperatureRequest {
 				handleSuccess(t);
 				System.out.println("Temperature was succesfully transmitted");
 			}
+		} catch (JsonProcessingException e1) {
+			handleError(t);
+			e1.printStackTrace();
+
 		} catch (IOException e) {
+			handleError(t);
 			e.printStackTrace();
 		}
 
@@ -40,7 +53,7 @@ public class HTTPTemperatureRequest {
 	public void postAllUnTransferedTemperatures() {
 		facade.findNotTransfered().stream().forEach(this::postTemperature);
 	}
-	
+
 	private void handleError(Temperature t) {
 		facade.persist(t);
 	}
@@ -51,10 +64,6 @@ public class HTTPTemperatureRequest {
 		} catch (RuntimeException e) {
 			e.printStackTrace();
 		}
-	}
-
-	private String buildUrl(Temperature t) {
-		return BASE_URL + "?temp=" + t.getTemperature()+"&date="+t.getTime().getTime();
 	}
 
 }
