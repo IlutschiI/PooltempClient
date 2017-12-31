@@ -56,9 +56,7 @@ public class TemperatureService {
 				e.printStackTrace();
 			}
 
-		} else {
-			logger.info("valid Temperature was found, value is" + temp);
-		}
+		} 
 	}
 	
 }
