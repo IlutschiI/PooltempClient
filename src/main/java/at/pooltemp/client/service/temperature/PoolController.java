@@ -36,9 +36,9 @@ public class PoolController {
 						if (System.currentTimeMillis() - lastTransmittedInMillis > MINS30_IN_MILLISECONDS
 								&& temperature != null) {
 							facade.persist(temperature);
-							httpTemperatureRequest.postAllUnTransferedTemperatures();
 							lastTransmittedInMillis = System.currentTimeMillis();
 						}
+						httpTemperatureRequest.postAllUnTransferedTemperatures();
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
