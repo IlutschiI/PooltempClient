@@ -1,6 +1,7 @@
 package at.pooltemp.client.http;
 
 import java.io.IOException;
+import java.util.Date;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,7 +18,7 @@ import okhttp3.Response;
 
 public class HTTPTemperatureRequest {
 
-	private static final String BASE_URL = "http://192.168.0.179:8080/temperature";
+	private static final String BASE_URL = "http://mypooltemp.ddns.net:8000/temperature";
 	private TemperatureDBFacade facade = new TemperatureDBFacade();
 
 	public void postTemperature(Temperature t) {
@@ -37,8 +38,9 @@ public class HTTPTemperatureRequest {
 				handleError(t);
 			} else {
 				handleSuccess(t);
-				System.out.println("Temperature was succesfully transmitted");
+				System.out.println(new Date()+": Temperature was succesfully transmitted");
 			}
+			response.close();
 		} catch (JsonProcessingException e1) {
 			handleError(t);
 			e1.printStackTrace();
