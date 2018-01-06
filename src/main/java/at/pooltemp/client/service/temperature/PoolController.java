@@ -10,14 +10,14 @@ import at.pooltemp.client.service.temperature.model.Temperature;
 
 public class PoolController {
 
-	//private static final int MINS30_IN_MILLISECONDS = 1800000;
-	private static final int MINS30_IN_MILLISECONDS = 60000;
+	private static final int MINS30_IN_MILLISECONDS = 1800000;
+	//private static final int MINS30_IN_MILLISECONDS = 60000;
 
 	private TemperatureDBFacade facade = new TemperatureDBFacade();
 	private Temperature temperature;
 	private Logger logger = Logger.getLogger("TemepratureController");
 	private HTTPTemperatureRequest httpTemperatureRequest = new HTTPTemperatureRequest();
-	private TemperatureService temperatureService=new TemperatureService();
+	private TemperatureService temperatureService = new TemperatureService();
 
 	public void start() {
 		SimpleFormatter fmt = new SimpleFormatter();
@@ -33,7 +33,8 @@ public class PoolController {
 					try {
 						temperature = temperatureService.getNewTemperature();
 						// httpTemperatureRequest.postTemperature(temperature);
-						if (System.currentTimeMillis() - lastTransmittedInMillis > MINS30_IN_MILLISECONDS) {
+						if (System.currentTimeMillis() - lastTransmittedInMillis > MINS30_IN_MILLISECONDS
+								&& temperature != null) {
 							facade.persist(temperature);
 							httpTemperatureRequest.postAllUnTransferedTemperatures();
 							lastTransmittedInMillis = System.currentTimeMillis();
