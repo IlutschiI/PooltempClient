@@ -5,12 +5,14 @@ import java.util.List;
 
 import at.pooltemp.client.http.HTTPTemperatureRequest;
 import at.pooltemp.client.logger.Logger;
+import at.pooltemp.client.properties.PropertyFinder;
 import at.pooltemp.client.service.temperature.db.TemperatureDBFacade;
 import at.pooltemp.client.service.temperature.model.Temperature;
 
 public class TemperatureController {
 
-	private static final int MINS30_IN_MILLISECONDS = 1800000;
+	//private static final int MINS30_IN_MILLISECONDS = 1800000;
+	private static final int TIME_BETWEEN_MEASUREMENTS = Integer.valueOf(PropertyFinder.getInstance().findProperty("time_between_measurements"));
 	//private static final int MINS30_IN_MILLISECONDS = 60000;
 
 	private TemperatureDBFacade facade = new TemperatureDBFacade();
@@ -29,7 +31,7 @@ public class TemperatureController {
 					try {
 						temperature = temperatureService.getNewTemperature();
 						// httpTemperatureRequest.postTemperature(temperature);
-						if (System.currentTimeMillis() - lastTransmittedInMillis > MINS30_IN_MILLISECONDS
+						if (System.currentTimeMillis() - lastTransmittedInMillis > TIME_BETWEEN_MEASUREMENTS
 								&& temperature != null) {
 							facade.persist(temperature);
 							lastTransmittedInMillis = System.currentTimeMillis();

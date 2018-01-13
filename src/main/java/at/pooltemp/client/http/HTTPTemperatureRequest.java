@@ -6,6 +6,7 @@ import java.util.Date;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import at.pooltemp.client.properties.PropertyFinder;
 import at.pooltemp.client.service.temperature.converter.TemperatureConverter;
 import at.pooltemp.client.service.temperature.db.TemperatureDBFacade;
 import at.pooltemp.client.service.temperature.model.Temperature;
@@ -18,7 +19,8 @@ import okhttp3.Response;
 
 public class HTTPTemperatureRequest {
 
-	private static final String BASE_URL = "http://mypooltemp.ddns.net:8000/temperature";
+	//private static final String BASE_URL = "http://mypooltemp.ddns.net:8000/temperature";
+	private static final String BASE_URL = PropertyFinder.getInstance().findProperty("base_url");
 	private TemperatureDBFacade facade = new TemperatureDBFacade();
 
 	public void postTemperature(Temperature t) {
