@@ -25,6 +25,15 @@ public class TemperatureDBFacade {
 		transaction.commit();
 		return temperature;
 	}
+	
+	public List<Temperature> persist(List<Temperature> temperatures) {
+		transaction.begin();
+		for (Temperature temperature : temperatures) {
+			entityManager.persist(temperature);
+		}
+		transaction.commit();
+		return temperatures;
+	}
 
 	public List<Temperature> findAll() {
 		transaction.begin();

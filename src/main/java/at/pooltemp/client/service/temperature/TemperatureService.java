@@ -1,5 +1,6 @@
 package at.pooltemp.client.service.temperature;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -16,9 +17,9 @@ public class TemperatureService {
 
 	private Logger logger = Logger.getLogger("TemepratureController");
 	private W1Master master = new W1Master();
-	
-	public Temperature getNewTemperature() {
-		Temperature temperature = null;
+
+	public List<Temperature> getNewTemperature() {
+		List<Temperature> temperature = new ArrayList<>();
 		List<W1Device> devices = master.getDevices().stream()
 				.filter(d -> d.getFamilyId() == TmpDS18B20DeviceType.FAMILY_CODE).collect(Collectors.toList());
 
@@ -27,7 +28,7 @@ public class TemperatureService {
 		}
 
 		for (W1Device w1Device : devices) {
-			temperature = readTemperatureFromSensor(w1Device);
+			temperature.add(readTemperatureFromSensor(w1Device));
 		}
 		return temperature;
 	}
@@ -35,10 +36,17 @@ public class TemperatureService {
 	private Temperature readTemperatureFromSensor(W1Device w1Device) {
 		Temperature temperature;
 		temperature = new Temperature();
-		
+
 		double temp = ((TemperatureSensor) w1Device).getTemperature();
 
-		validateTemperature(temp);
+		if (!isTemperatureValid(temp)) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			return readTemperatureFromSensor(w1Device);
+		}
 
 		temperature.setTemperature(temp);
 		temperature.setTime(new Date());
@@ -46,17 +54,11 @@ public class TemperatureService {
 		return temperature;
 	}
 
-	private void validateTemperature(double temp) {
+	private boolean isTemperatureValid(double temp) {
 		if (temp == 85) {
-			logger.warning("invalid Temperature was found");
-			try {
-				Thread.sleep(100);
-				getNewTemperature();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
-		} 
+			return false;
+		}
+		return true;
 	}
-	
+
 }

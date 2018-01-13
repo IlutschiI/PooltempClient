@@ -1,34 +1,30 @@
 package at.pooltemp.client.service.temperature;
 
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-import java.util.logging.StreamHandler;
+
+import java.util.List;
 
 import at.pooltemp.client.http.HTTPTemperatureRequest;
+import at.pooltemp.client.logger.Logger;
 import at.pooltemp.client.service.temperature.db.TemperatureDBFacade;
 import at.pooltemp.client.service.temperature.model.Temperature;
 
-public class PoolController {
+public class TemperatureController {
 
 	private static final int MINS30_IN_MILLISECONDS = 1800000;
 	//private static final int MINS30_IN_MILLISECONDS = 60000;
 
 	private TemperatureDBFacade facade = new TemperatureDBFacade();
-	private Temperature temperature;
-	private Logger logger = Logger.getLogger("TemepratureController");
 	private HTTPTemperatureRequest httpTemperatureRequest = new HTTPTemperatureRequest();
 	private TemperatureService temperatureService = new TemperatureService();
 
 	public void start() {
-		SimpleFormatter fmt = new SimpleFormatter();
-		StreamHandler sh = new StreamHandler(System.out, fmt);
-		logger.addHandler(sh);
 		Thread t = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				logger.info("started");
+				Logger.info("started");
 				long lastTransmittedInMillis = 0;
+				List<Temperature> temperature;
 				while (true) {
 					try {
 						temperature = temperatureService.getNewTemperature();
@@ -49,10 +45,6 @@ public class PoolController {
 		});
 
 		t.start();
-	}
-
-	public Temperature getTemperature() {
-		return temperature;
 	}
 
 }

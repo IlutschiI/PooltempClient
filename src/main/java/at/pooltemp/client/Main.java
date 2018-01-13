@@ -5,13 +5,13 @@ import java.util.Date;
 import javax.persistence.EntityManager;
 
 import at.pooltemp.client.db.EntityManagerFactory;
-import at.pooltemp.client.service.temperature.PoolController;
+import at.pooltemp.client.service.temperature.TemperatureController;
 import at.pooltemp.client.service.temperature.model.Temperature;
 
 public class Main {
 
 	public static void main(String[] args) {
-		 new PoolController().start();
+		 new TemperatureController().start();
 
 //		Temperature t = new Temperature();
 //		t.setTemperature(12.2);
