@@ -41,6 +41,9 @@ public class TemperatureController {
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+						// TODO: handle exception
 					}
 				}
 			}

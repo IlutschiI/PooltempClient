@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import com.pi4j.component.temperature.TemperatureSensor;
+import com.pi4j.component.temperature.TemperatureSensorBase;
 import com.pi4j.component.temperature.impl.TmpDS18B20DeviceType;
 import com.pi4j.io.w1.W1Device;
 import com.pi4j.io.w1.W1Master;
@@ -38,7 +39,6 @@ public class TemperatureService {
 		temperature = new Temperature();
 
 		double temp = ((TemperatureSensor) w1Device).getTemperature();
-
 		if (!isTemperatureValid(temp)) {
 			try {
 				Thread.sleep(100);
