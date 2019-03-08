@@ -20,53 +20,67 @@ public class TemperatureDBFacade {
 	}
 
 	public Temperature persist(Temperature temperature) {
-		transaction.begin();
+		beginTransaction();
 		entityManager.persist(temperature);
-		transaction.commit();
+		closeTransaction();
 		return temperature;
 	}
-	
+
+	private void beginTransaction() {
+		if (!transaction.isActive()) {
+			transaction.begin();
+		}
+	}
+
 	public List<Temperature> persist(List<Temperature> temperatures) {
-		transaction.begin();
+		beginTransaction();
 		for (Temperature temperature : temperatures) {
 			entityManager.persist(temperature);
 		}
-		transaction.commit();
+		closeTransaction();
 		return temperatures;
 	}
 
+	private void closeTransaction() {
+		if (transaction.isActive() == true)
+			transaction.commit();
+	}
+
 	public List<Temperature> findAll() {
-		transaction.begin();
+		beginTransaction();
 		List<Temperature> resultList = entityManager.createNamedQuery(Temperature.FIND_ALL).getResultList();
-		transaction.commit();
+		closeTransaction();
 		return resultList;
 	}
 
 	public Temperature findById(int id) {
-		transaction.begin();
+		beginTransaction();
 		Temperature result = null;
 		try {
 			result = (Temperature) entityManager.createNamedQuery(Temperature.FIND_BY_ID).setParameter("id", id)
 					.getSingleResult();
 		} catch (NoResultException e) {
 		} finally {
-			transaction.commit();
+			closeTransaction();
 		}
 		return result;
 	}
-	
+
 	public void updateTransfered(Temperature t) {
-		transaction.begin();
-		int updatedEntities=entityManager.createNamedQuery(Temperature.SET_TRANSFERED_TRUE).setParameter("id", t.getId()).executeUpdate();
-		transaction.commit();
-		if(updatedEntities!=1) {
-			throw new RuntimeException("More ore less than one Entity was updated!!!  updated entities: "+updatedEntities);
+		beginTransaction();
+		int updatedEntities = entityManager.createNamedQuery(Temperature.SET_TRANSFERED_TRUE)
+				.setParameter("id", t.getId()).executeUpdate();
+		closeTransaction();
+		if (updatedEntities != 1) {
+			throw new RuntimeException(
+					"More ore less than one Entity was updated!!!  updated entities: " + updatedEntities);
 		}
-		
+
 	}
-	
-	public List<Temperature> findNotTransfered(){
-		return entityManager.createNamedQuery(Temperature.FIND_NOT_TRANSFERED).setParameter("transfered", false).getResultList();
+
+	public List<Temperature> findNotTransfered() {
+		return entityManager.createNamedQuery(Temperature.FIND_NOT_TRANSFERED).setParameter("transfered", false)
+				.getResultList();
 	}
 
 }

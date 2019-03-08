@@ -33,7 +33,7 @@ public class HTTPTemperatureRequest {
 			Request request;
 			request = new Request.Builder().url(url).post(RequestBody.create(MediaType.parse("application/json"),
 					new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(temperatureDTO))).build();
-
+			System.out.println("executing: "+url);
 			Response response = client.newCall(request).execute();
 			if (response.code() != 200) {
 				System.out.println("something went wrong!!!");

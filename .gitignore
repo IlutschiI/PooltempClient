@@ -25,3 +25,6 @@ hs_err_pid*
 /.project
 org.eclipse.jdt.core.prefs
 org.eclipse.m2e.core.prefs
+
+.idea/
+*.iml
